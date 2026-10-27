@@ -28,4 +28,28 @@
     if (href.indexOf('tel:') === 0) { fire(CALL_LABEL, 'call'); }
     else if (href.indexOf('sms:') === 0) { fire(TEXT_LABEL, 'text'); }
   }, true);
+
+  // Scroll checkpoints: fire once each at 25, 50 and 75 percent of the page.
+  var marks = [25, 50, 75], sent = {};
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    if (h <= 0) return;
+    var pct = (window.scrollY / h) * 100;
+    for (var i = 0; i < marks.length; i++) {
+      var m = marks[i];
+      if (pct >= m && !sent[m]) { sent[m] = true; gtag('event', 'scroll_depth', { percent: m }); }
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  // Section views: fire once when each main section heading comes on screen.
+  var names = { 'process-title': 'how_it_works', 'damage-title': 'hail_damage_signs', 'report-title': 'dont_wait', 'areas-title': 'areas_served', 'contact-title': 'call_box' };
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { gtag('event', 'section_view', { section: names[en.target.id] }); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.5 });
+    Object.keys(names).forEach(function (id) { var el = document.getElementById(id); if (el) io.observe(el); });
+  }
 })();
