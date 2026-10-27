@@ -3,7 +3,7 @@
   var ADS_ID = 'AW-17670231661';
   var CALL_LABEL = 'AW-17670231661/mVLhCKOHhKsdEO2s6elB';
   var TEXT_LABEL = 'AW-17670231661/8eEdCKaHhKsdEO2s6elB';
-  var GA4_ID = ''; // filled in once the GA4 property exists
+  var GA4_ID = ''; // GA4 (G-SQNYXG3CHP) rides on the AW tag via Google tag settings; leave blank to avoid double page views
 
   var s = document.createElement('script');
   s.async = true;
@@ -18,7 +18,7 @@
 
   function fire(label, kind) {
     gtag('event', 'conversion', { send_to: label });
-    if (GA4_ID) { gtag('event', kind === 'call' ? 'click_to_call' : 'click_to_text', { link_url: kind }); }
+    gtag('event', kind === 'call' ? 'click_to_call' : 'click_to_text', { method: kind });
   }
 
   document.addEventListener('click', function (e) {
