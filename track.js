@@ -16,6 +16,23 @@
   gtag('config', ADS_ID);
   if (GA4_ID) { gtag('config', GA4_ID); }
 
+  // Google forwarding number: ad visitors see a Google number that rings Richard's phone,
+  // so Google Ads logs each real call (time and length). Text buttons keep the real number.
+  var REAL = '(602) 980-7484';
+  gtag('config', 'AW-17670231661/6qoOCMin0K4dEO2s6elB', {
+    'phone_conversion_number': REAL,
+    'phone_conversion_callback': function (formatted, mobile) {
+      var digits = String(mobile || formatted || '').replace(/[^0-9+]/g, '');
+      if (!digits || !formatted) return;
+      var links = document.querySelectorAll('a[href^="tel:"]');
+      for (var i = 0; i < links.length; i++) { links[i].setAttribute('href', 'tel:' + digits); }
+      var walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n;
+      while ((n = walk.nextNode())) {
+        if (n.nodeValue.indexOf(REAL) !== -1) { n.nodeValue = n.nodeValue.split(REAL).join(formatted); }
+      }
+    }
+  });
+
   function fire(label, kind) {
     gtag('event', 'conversion', { send_to: label });
     gtag('event', kind === 'call' ? 'click_to_call' : 'click_to_text', { method: kind });
