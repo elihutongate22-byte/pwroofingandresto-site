@@ -28,7 +28,7 @@
       for (var i = 0; i < links.length; i++) { links[i].setAttribute('href', 'tel:' + digits); }
       var walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null), n;
       while ((n = walk.nextNode())) {
-        if (n.nodeValue.indexOf(REAL) !== -1) { n.nodeValue = n.nodeValue.split(REAL).join(formatted); }
+        if (n.nodeValue.indexOf(REAL) !== -1 && !(n.parentNode.closest && n.parentNode.closest('.contact-label'))) { n.nodeValue = n.nodeValue.split(REAL).join(formatted); }
       }
     }
   });
